@@ -1,0 +1,10 @@
+<rule id="900100" level="12"> 
+  <if_sid>92069,92052</if_sid>
+  <field name="win.eventdata.parentimage" type="pcre2">(?i)\\wmiprvse\.exe</field>
+  <field name="win.eventdata.commandline" type="pcre2">(?i)cmd\.exe \/Q \/c</field>
+  <description>Possible WMIexec $(win.eventdata.parentimage) created a cmd.exe child process.</description>
+  <mitre>
+    <id>T1047</id>
+    <id>T1021.003</id>
+  </mitre>
+</rule>
