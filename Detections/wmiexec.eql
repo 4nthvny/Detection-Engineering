@@ -1,0 +1,21 @@
+process where
+  host.os.type == "windows" and
+  event.category == "process" and
+  process.parent.name : "WmiPrvSE.exe" and
+  (
+    (
+      process.name : "cmd.exe" and
+      process.command_line : "* /Q * /c *"
+    )
+    or
+    (
+      process.name : "powershell.exe" and
+      process.command_line : "*-NoP* -NoL* -sta* -NonI* -W Hidden* -Exec Bypass* -Enc*"
+    )
+    or
+    process.name : (
+      "rundll32.exe",
+      "cscript.exe",
+      "wscript.exe"
+    )
+  )

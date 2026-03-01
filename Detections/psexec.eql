@@ -1,0 +1,31 @@
+sequence by host.name with maxspan=5m
+  [any where
+    host.os.type == "windows" and
+    event.code == "5145" and
+    (
+      winlog.event_data.ShareName like "\\\\*\\ADMIN$" or 
+      winlog.event_data.ShareName like "\\\\*\\C$"
+    ) and
+    (
+      file.name like "*.exe" or
+      winlog.event_data.RelativeTargetName like "*.exe"
+    ) and
+    (
+      winlog.event_data.AccessMask in ("0x2", "0x00000002") or
+      winlog.event_data.AccessList == "%%4417"
+    ) and
+      source.ip != null and
+      source.ip != "192.168.1.160"
+  ]
+  [file where
+    host.os.type == "windows" and
+    event.category == "file" and
+    event.type in ("creation","change") and
+    file.extension == "exe" and
+    file.name != null
+  ]
+  [registry where
+    host.os.type == "windows" and
+    event.category == "registry" and
+    registry.path like "*\\System\\CurrentControlSet\\Services\\*\\ImagePath"
+  ]
